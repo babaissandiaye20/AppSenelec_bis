@@ -1,0 +1,1731 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Opened Files
+## File Name
+src/main/resources/application.yml
+## File Content
+spring:
+  application:
+    name: senelec-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ep-dawn-flower-a4jfwa7h-pooler.us-east-1.aws.neon.tech/senelec?sslmode=require&channel_binding=require
+    username: Freak_owner
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show_sql: true
+server:
+  port: 8080
+springdoc:
+  api-docs:
+    path: /api-docs 
+
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/service/LogService.java
+## File Content
+package com.AppSenelec.service;
+
+import com.AppSenelec.model.Log;
+import com.AppSenelec.repository.LogRepository;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+@Service
+public class LogService implements ILogService {
+    private final LogRepository logRepository;
+
+    public LogService(LogRepository logRepository) {
+        this.logRepository = logRepository;
+    }
+
+    @Override
+    public List<Log> findAll() {
+        return logRepository.findAll();
+    }
+
+    @Override
+    public Log save(Log log) {
+        return logRepository.save(log);
+    }
+
+    @Override
+    public Log findById(long id) {
+        return logRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Log> findAllNotDeleted() {
+        return logRepository.findAllNotDeleted();
+    }
+
+    @Override
+    public void delete(Log log) {
+        logRepository.delete(log);
+    }
+
+    @Override
+    public Log update(long id, Log log) {
+        log.setId(id);
+        return logRepository.save(log);
+    }
+
+    @Override
+    public Page<Log> findAllPaginated(Pageable pageable) {
+        return logRepository.findAll(pageable);
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/mapper/CompteurMapper.java
+## File Content
+package com.AppSenelec.mapper;
+
+import com.AppSenelec.model.Compteur;
+import com.AppSenelec.dto.CreateCompteurRequest;
+import com.AppSenelec.dto.CreateCompteurResponse;
+
+public class CompteurMapper {
+    public static Compteur toEntity(CreateCompteurRequest request) {
+        return Compteur.builder()
+                .referenceNumber(request.getReferenceNumber())
+                .userId(request.getUserId())
+                .build();
+    }
+
+    public static CreateCompteurResponse toResponse(Compteur entity) {
+        return CreateCompteurResponse.builder()
+                .id(entity.getId())
+                .referenceNumber(entity.getReferenceNumber())
+                .kwhConsumption(entity.getKwhConsumption())
+                .userId(entity.getUserId())
+                .status(entity.getStatus())
+                .creationDate(entity.getCreationDate())
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/mapper/LogMapper.java
+## File Content
+package com.AppSenelec.mapper;
+
+import com.AppSenelec.model.Log;
+import com.AppSenelec.dto.CreateLogRequest;
+import com.AppSenelec.dto.CreateLogResponse;
+
+public class LogMapper {
+    public static Log toEntity(CreateLogRequest request) {
+        return Log.builder()
+                .action(request.getAction())
+                .date(request.getDate())
+                .userId(request.getUserId())
+                .details(request.getDetails())
+                .build();
+    }
+
+    public static CreateLogResponse toResponse(Log entity) {
+        return CreateLogResponse.builder()
+                .id(entity.getId())
+                .action(entity.getAction())
+                .date(entity.getDate())
+                .userId(entity.getUserId())
+                .details(entity.getDetails())
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/dto/CreateLogResponse.java
+## File Content
+package com.AppSenelec.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateLogResponse {
+    private Long id;
+    private String action;
+    private LocalDateTime date;
+    private Long userId;
+    private String details;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/dto/CreateLogRequest.java
+## File Content
+package com.AppSenelec.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateLogRequest {
+    @NotBlank(message = "L'action est obligatoire")
+    private String action;
+    private LocalDateTime date;
+    private Long userId;
+    private String details;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/mapper/TarifMapper.java
+## File Content
+package com.AppSenelec.mapper;
+
+import com.AppSenelec.model.Tarif;
+import com.AppSenelec.dto.CreateTarifRequest;
+import com.AppSenelec.dto.CreateTarifResponse;
+
+public class TarifMapper {
+    public static Tarif toEntity(CreateTarifRequest request) {
+        return Tarif.builder()
+                .amount(request.getAmount())
+                .kwh(request.getKwh())
+                .build();
+    }
+
+    public static CreateTarifResponse toResponse(Tarif entity) {
+        return CreateTarifResponse.builder()
+                .id(entity.getId())
+                .amount(entity.getAmount())
+                .kwh(entity.getKwh())
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/dto/CreateTarifResponse.java
+## File Content
+package com.AppSenelec.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateTarifResponse {
+    private Long id;
+    private Double amount;
+    private Double kwh;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/dto/CreateTarifRequest.java
+## File Content
+package com.AppSenelec.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateTarifRequest {
+    private Double amount;
+    private Double kwh;
+} 
+# Opened Files
+## File Name
+pom.xml
+## File Content
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.AppSenelec </groupId>
+	<artifactId>AppSenelec</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>AppSenelec</name>
+	<description>Demo project for Spring Boot</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/mapper/AchatMapper.java
+## File Content
+package com.AppSenelec.mapper;
+
+import com.AppSenelec.model.Achat;
+import com.AppSenelec.model.TransactionStatus;
+import com.AppSenelec.dto.CreateAchatRequest;
+import com.AppSenelec.dto.CreateAchatResponse;
+
+public class AchatMapper {
+    public static Achat toEntity(CreateAchatRequest request) {
+        return Achat.builder()
+                .numero(request.getNumero())
+                .reference(request.getReference())
+                .amount(request.getAmount())
+                .tarifId(request.getTarifId())
+                .date(request.getDate())
+                .build();
+    }
+
+    public static CreateAchatResponse toResponse(Achat entity) {
+        return CreateAchatResponse.builder()
+                .id(entity.getId())
+                .numero(entity.getNumero())
+                .reference(entity.getReference())
+                .amount(entity.getAmount())
+                .kwhPurchased(entity.getKwhPurchased())
+                .transactionStatus(entity.getTransactionStatus().name())
+                .tarifId(entity.getTarifId())
+                .date(entity.getDate())
+                .codeRecharge(entity.getCodeRecharge())
+                .isUsed(entity.isUsed())
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/dto/CreateAchatRequest.java
+## File Content
+package com.AppSenelec.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateAchatRequest {
+    @NotBlank(message = "Le numéro est obligatoire")
+    private String numero;
+    @NotNull(message = "Le montant est obligatoire")
+    private Double amount;
+    private LocalDateTime date;
+    @NotBlank(message = "La référence du compteur est obligatoire")
+    private String reference;
+    @NotNull(message = "L'id du tarif est obligatoire")
+    private Long tarifId;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/dto/CreateCompteurResponse.java
+## File Content
+package com.AppSenelec.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateCompteurResponse {
+    private Long id;
+    private String referenceNumber;
+    private Double kwhConsumption;
+    private Long userId;
+    private String status;
+    private LocalDateTime creationDate;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/dto/CreateCompteurRequest.java
+## File Content
+package com.AppSenelec.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateCompteurRequest {
+    @NotBlank(message = "La référence est obligatoire")
+    private String referenceNumber;
+    private Long userId;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/helper/CompteurHelper.java
+## File Content
+package com.AppSenelec.helper;
+
+import com.AppSenelec.dto.CreateCompteurRequest;
+import com.AppSenelec.dto.CreateCompteurResponse;
+import com.AppSenelec.exception.NotFoundException;
+import com.AppSenelec.mapper.CompteurMapper;
+import com.AppSenelec.model.Compteur;
+import com.AppSenelec.repository.CompteurRepository;
+import com.AppSenelec.response.ApiResponse;
+import com.AppSenelec.service.ICompteurService;
+import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+@Component
+public class CompteurHelper {
+    private final ICompteurService compteurService;
+
+    public CompteurHelper(ICompteurService compteurService) {
+        this.compteurService = compteurService;
+    }
+
+    public ApiResponse<CreateCompteurResponse> save(CreateCompteurRequest request) {
+        // Vérifier l'unicité de la référence
+        if (compteurService.existsByReferenceNumber(request.getReferenceNumber())) {
+            throw new IllegalArgumentException("Un compteur avec la référence " + request.getReferenceNumber() + " existe déjà");
+        }
+        
+        Compteur compteur = CompteurMapper.toEntity(request);
+        if (compteur.getKwhConsumption() == null) {
+            compteur.setKwhConsumption(0.0);
+        }
+        compteur.setCreationDate(LocalDateTime.now());
+        compteur.setStatus("ACTIVE");
+        compteur = compteurService.save(compteur);
+        CreateCompteurResponse response = CompteurMapper.toResponse(compteur);
+        return ApiResponse.<CreateCompteurResponse>builder()
+                .message("Compteur créé avec succès")
+                .date(LocalDateTime.now())
+                .status(201)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<CreateCompteurResponse> findById(long id) {
+        Compteur compteur = compteurService.findById(id);
+        if (compteur == null) {
+            throw new NotFoundException("Compteur avec id " + id + " introuvable");
+        }
+        CreateCompteurResponse response = CompteurMapper.toResponse(compteur);
+        return ApiResponse.<CreateCompteurResponse>builder()
+                .message("Compteur trouvé")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<List<CreateCompteurResponse>> findAll(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? 
+            Sort.by(sortBy).descending() : 
+            Sort.by(sortBy).ascending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Compteur> compteursPage = compteurService.findAllPaginated(pageable);
+        
+        List<CreateCompteurResponse> list = compteursPage.getContent().stream()
+                .map(CompteurMapper::toResponse)
+                .collect(Collectors.toList());
+        
+        return ApiResponse.<List<CreateCompteurResponse>>builder()
+                .message("Liste des compteurs récupérée avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(list)
+                .totalElements(compteursPage.getTotalElements())
+                .totalPages(compteursPage.getTotalPages())
+                .currentPage(compteursPage.getNumber())
+                .pageSize(compteursPage.getSize())
+                .isFirst(compteursPage.isFirst())
+                .isLast(compteursPage.isLast())
+                .build();
+    }
+
+    public ApiResponse<CreateCompteurResponse> update(long id, CreateCompteurRequest request) {
+        Compteur existing = compteurService.findById(id);
+        if (existing == null) {
+            throw new NotFoundException("Compteur avec id " + id + " introuvable");
+        }
+        Compteur updated = CompteurMapper.toEntity(request);
+        updated.setId(id);
+        updated = compteurService.update(id, updated);
+        CreateCompteurResponse response = CompteurMapper.toResponse(updated);
+        return ApiResponse.<CreateCompteurResponse>builder()
+                .message("Compteur mis à jour avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<String> delete(long id) {
+        Compteur compteur = compteurService.findById(id);
+        if (compteur == null) {
+            throw new NotFoundException("Compteur avec id " + id + " introuvable");
+        }
+        compteurService.delete(compteur);
+        return ApiResponse.<String>builder()
+                .message("Compteur supprimé avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data("Compteur supprimé")
+                .build();
+    }
+
+    public ApiResponse<CreateCompteurResponse> rechargeCompteur(String codeRecharge, String referenceCompteur) {
+        Compteur compteur = compteurService.rechargeCompteur(codeRecharge, referenceCompteur);
+        CreateCompteurResponse response = CompteurMapper.toResponse(compteur);
+        return ApiResponse.<CreateCompteurResponse>builder()
+                .message("Recharge effectuée avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/service/AchatService.java
+## File Content
+package com.AppSenelec.service;
+
+import com.AppSenelec.model.Achat;
+import com.AppSenelec.repository.AchatRepository;
+import com.AppSenelec.util.CodeGeneratorUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class AchatService implements IAchatService {
+    private final AchatRepository achatRepository;
+    private final CodeGeneratorUtil codeGeneratorUtil;
+
+    public AchatService(AchatRepository achatRepository, CodeGeneratorUtil codeGeneratorUtil) {
+        this.achatRepository = achatRepository;
+        this.codeGeneratorUtil = codeGeneratorUtil;
+    }
+
+    @Override
+    public List<Achat> findAll() {
+        return achatRepository.findAll();
+    }
+
+    @Override
+    public Achat save(Achat achat) {
+        return achatRepository.save(achat);
+    }
+
+    @Override
+    public Achat findById(long id) {
+        return achatRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Achat> findAllNotDeleted() {
+        return achatRepository.findAllNotDeleted();
+    }
+
+    @Override
+    public void delete(Achat achat) {
+        achatRepository.delete(achat);
+    }
+
+    @Override
+    public Achat update(long id, Achat achat) {
+        achat.setId(id);
+        return achatRepository.save(achat);
+    }
+
+    @Override
+    public boolean existsByCodeRecharge(String codeRecharge) {
+        return achatRepository.existsByCodeRecharge(codeRecharge);
+    }
+
+    @Override
+    public Achat findByCodeRecharge(String codeRecharge) {
+        return achatRepository.findByCodeRecharge(codeRecharge);
+    }
+
+    /**
+     * Génère un code de recharge unique
+     * @return Code de recharge unique
+     */
+    public String generateUniqueCodeRecharge() {
+        return codeGeneratorUtil.generateUniqueCode(this::existsByCodeRecharge);
+    }
+
+    @Override
+    public Page<Achat> findAllPaginated(Pageable pageable) {
+        return achatRepository.findAll(pageable);
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/controller/AchatController.java
+## File Content
+package com.AppSenelec.controller;
+
+import com.AppSenelec.dto.CreateAchatRequest;
+import com.AppSenelec.dto.CreateAchatResponse;
+import com.AppSenelec.helper.AchatHelper;
+import com.AppSenelec.response.ApiResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/achats")
+public class AchatController {
+    private final AchatHelper achatHelper;
+
+    public AchatController(AchatHelper achatHelper) {
+        this.achatHelper = achatHelper;
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreateAchatResponse>> save(@RequestBody @Valid CreateAchatRequest request) {
+        ApiResponse<CreateAchatResponse> response = achatHelper.save(request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<CreateAchatResponse>>> allAchats(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        ApiResponse<List<CreateAchatResponse>> response = achatHelper.findAll(page, size, sortBy, sortDir);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateAchatResponse>> getById(@PathVariable long id) {
+        ApiResponse<CreateAchatResponse> response = achatHelper.findById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateAchatResponse>> update(@PathVariable long id, @RequestBody @Valid CreateAchatRequest request) {
+        ApiResponse<CreateAchatResponse> response = achatHelper.update(id, request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> delete(@PathVariable long id) {
+        ApiResponse<String> response = achatHelper.delete(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/controller/LogController.java
+## File Content
+package com.AppSenelec.controller;
+
+import com.AppSenelec.dto.CreateLogRequest;
+import com.AppSenelec.dto.CreateLogResponse;
+import com.AppSenelec.helper.LogHelper;
+import com.AppSenelec.response.ApiResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/logs")
+public class LogController {
+    private final LogHelper logHelper;
+
+    public LogController(LogHelper logHelper) {
+        this.logHelper = logHelper;
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreateLogResponse>> save(@RequestBody @Valid CreateLogRequest request) {
+        ApiResponse<CreateLogResponse> response = logHelper.save(request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<CreateLogResponse>>> allLogs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        ApiResponse<List<CreateLogResponse>> response = logHelper.findAll(page, size, sortBy, sortDir);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateLogResponse>> getById(@PathVariable long id) {
+        ApiResponse<CreateLogResponse> response = logHelper.findById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateLogResponse>> update(@PathVariable long id, @RequestBody @Valid CreateLogRequest request) {
+        ApiResponse<CreateLogResponse> response = logHelper.update(id, request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> delete(@PathVariable long id) {
+        ApiResponse<String> response = logHelper.delete(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/controller/TarifController.java
+## File Content
+package com.AppSenelec.controller;
+
+import com.AppSenelec.dto.CreateTarifRequest;
+import com.AppSenelec.dto.CreateTarifResponse;
+import com.AppSenelec.helper.TarifHelper;
+import com.AppSenelec.response.ApiResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/tarifs")
+public class TarifController {
+    private final TarifHelper tarifHelper;
+
+    public TarifController(TarifHelper tarifHelper) {
+        this.tarifHelper = tarifHelper;
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreateTarifResponse>> save(@RequestBody @Valid CreateTarifRequest request) {
+        ApiResponse<CreateTarifResponse> response = tarifHelper.save(request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<CreateTarifResponse>>> allTarifs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        ApiResponse<List<CreateTarifResponse>> response = tarifHelper.findAll(page, size, sortBy, sortDir);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateTarifResponse>> getById(@PathVariable long id) {
+        ApiResponse<CreateTarifResponse> response = tarifHelper.findById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateTarifResponse>> update(@PathVariable long id, @RequestBody @Valid CreateTarifRequest request) {
+        ApiResponse<CreateTarifResponse> response = tarifHelper.update(id, request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> delete(@PathVariable long id) {
+        ApiResponse<String> response = tarifHelper.delete(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/controller/CompteurController.java
+## File Content
+package com.AppSenelec.controller;
+
+import com.AppSenelec.dto.CreateCompteurRequest;
+import com.AppSenelec.dto.CreateCompteurResponse;
+import com.AppSenelec.helper.CompteurHelper;
+import com.AppSenelec.response.ApiResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import java.util.List;
+
+class RechargeRequest {
+    public String codeRecharge;
+    public String referenceCompteur;
+}
+
+@RestController
+@RequestMapping("/api/compteurs")
+public class CompteurController {
+    private final CompteurHelper compteurHelper;
+
+    public CompteurController(CompteurHelper compteurHelper) {
+        this.compteurHelper = compteurHelper;
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreateCompteurResponse>> save(@RequestBody @Valid CreateCompteurRequest request) {
+        ApiResponse<CreateCompteurResponse> response = compteurHelper.save(request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PostMapping("/recharge")
+    public ResponseEntity<ApiResponse<CreateCompteurResponse>> rechargeCompteur(@RequestBody RechargeRequest request) {
+        ApiResponse<CreateCompteurResponse> response = compteurHelper.rechargeCompteur(request.codeRecharge, request.referenceCompteur);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<CreateCompteurResponse>>> allCompteurs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        ApiResponse<List<CreateCompteurResponse>> response = compteurHelper.findAll(page, size, sortBy, sortDir);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateCompteurResponse>> getById(@PathVariable long id) {
+        ApiResponse<CreateCompteurResponse> response = compteurHelper.findById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CreateCompteurResponse>> update(@PathVariable long id, @RequestBody @Valid CreateCompteurRequest request) {
+        ApiResponse<CreateCompteurResponse> response = compteurHelper.update(id, request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> delete(@PathVariable long id) {
+        ApiResponse<String> response = compteurHelper.delete(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/service/CompteurService.java
+## File Content
+package com.AppSenelec.service;
+
+import com.AppSenelec.model.Compteur;
+import com.AppSenelec.repository.CompteurRepository;
+import com.AppSenelec.model.Achat;
+import com.AppSenelec.service.IAchatService;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+@Service
+public class CompteurService implements ICompteurService {
+    private final CompteurRepository compteurRepository;
+    private final IAchatService achatService;
+
+    public CompteurService(CompteurRepository compteurRepository, IAchatService achatService) {
+        this.compteurRepository = compteurRepository;
+        this.achatService = achatService;
+    }
+
+    @Override
+    public List<Compteur> findAll() {
+        return compteurRepository.findAll();
+    }
+
+    @Override
+    public Compteur save(Compteur compteur) {
+        return compteurRepository.save(compteur);
+    }
+
+    @Override
+    public Compteur findById(long id) {
+        return compteurRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Compteur> findAllNotDeleted() {
+        return compteurRepository.findAllNotDeleted();
+    }
+
+    @Override
+    public void delete(Compteur compteur) {
+        compteurRepository.delete(compteur);
+    }
+
+    @Override
+    public Compteur update(long id, Compteur compteur) {
+        compteur.setId(id);
+        return compteurRepository.save(compteur);
+    }
+
+    public Compteur rechargeCompteur(String codeRecharge, String referenceCompteur) {
+        Achat achat = achatService.findByCodeRecharge(codeRecharge);
+        if (achat == null) {
+            throw new IllegalArgumentException("Code de recharge invalide");
+        }
+        
+        // Vérifier si le code a déjà été utilisé
+        if (achat.isUsed()) {
+            throw new IllegalArgumentException("Ce code de recharge a déjà été utilisé");
+        }
+        
+        Compteur compteur = compteurRepository.findByReferenceNumber(referenceCompteur);
+        if (compteur == null) {
+            throw new IllegalArgumentException("Compteur introuvable");
+        }
+        
+        // Marquer le code comme utilisé
+        achat.setUsed(true);
+        achatService.save(achat);
+        
+        // Recharger le compteur
+        double kwhActuel = compteur.getKwhConsumption() != null ? compteur.getKwhConsumption() : 0;
+        double kwhAchat = achat.getKwhPurchased() != null ? achat.getKwhPurchased() : 0;
+        compteur.setKwhConsumption(kwhActuel + kwhAchat);
+        return compteurRepository.save(compteur);
+    }
+
+    @Override
+    public boolean existsByReferenceNumber(String referenceNumber) {
+        return compteurRepository.existsByReferenceNumber(referenceNumber);
+    }
+
+    @Override
+    public Page<Compteur> findAllPaginated(Pageable pageable) {
+        return compteurRepository.findAll(pageable);
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/service/ILogService.java
+## File Content
+package com.AppSenelec.service;
+
+import com.AppSenelec.model.Log;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface ILogService {
+    List<Log> findAll();
+    Log save(Log log);
+    Log findById(long id);
+    List<Log> findAllNotDeleted();
+    void delete(Log log);
+    Log update(long id, Log log);
+    Page<Log> findAllPaginated(Pageable pageable);
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/service/ITarifService.java
+## File Content
+package com.AppSenelec.service;
+
+import com.AppSenelec.model.Tarif;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface ITarifService {
+    List<Tarif> findAll();
+    Tarif save(Tarif tarif);
+    Tarif findById(long id);
+    List<Tarif> findAllNotDeleted();
+    void delete(Tarif tarif);
+    Tarif update(long id, Tarif tarif);
+    Page<Tarif> findAllPaginated(Pageable pageable);
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/service/IAchatService.java
+## File Content
+package com.AppSenelec.service;
+
+import com.AppSenelec.model.Achat;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface IAchatService {
+    List<Achat> findAll();
+    Achat save(Achat achat);
+    Achat findById(long id);
+    List<Achat> findAllNotDeleted();
+    void delete(Achat achat);
+    Achat update(long id, Achat achat);
+    boolean existsByCodeRecharge(String codeRecharge);
+    Achat findByCodeRecharge(String codeRecharge);
+    String generateUniqueCodeRecharge();
+    Page<Achat> findAllPaginated(Pageable pageable);
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/service/ICompteurService.java
+## File Content
+package com.AppSenelec.service;
+
+import com.AppSenelec.model.Compteur;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface ICompteurService {
+    List<Compteur> findAll();
+    Compteur save(Compteur compteur);
+    Compteur findById(long id);
+    List<Compteur> findAllNotDeleted();
+    void delete(Compteur compteur);
+    Compteur update(long id, Compteur compteur);
+    Compteur rechargeCompteur(String codeRecharge, String referenceCompteur);
+    boolean existsByReferenceNumber(String referenceNumber);
+    Page<Compteur> findAllPaginated(Pageable pageable);
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/exception/NotFoundException.java
+## File Content
+package com.AppSenelec.exception;
+
+import com.AppSenelec.dto.ErrorDto;
+import org.springframework.http.HttpStatus;
+
+public class NotFoundException extends RuntimeException {
+    private final ErrorDto errorDto;
+    private final HttpStatus status;
+
+    public NotFoundException(String message) {
+        super(message);
+        this.status = HttpStatus.NOT_FOUND;
+        this.errorDto = new ErrorDto("NOT_FOUND", message);
+    }
+
+    public ErrorDto getErrorDto() {
+        return errorDto;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/model/Log.java
+## File Content
+package com.AppSenelec.model;
+
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+import jakarta.annotation.Nullable;
+import lombok.Builder;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Log extends BaseModel {
+    private String action;
+    private LocalDateTime date;
+    @Nullable
+    private Long userId;
+    private String details;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/model/Tarif.java
+## File Content
+package com.AppSenelec.model;
+
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import java.util.List;
+import jakarta.persistence.OneToMany;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Tarif extends BaseModel {
+    private Double amount;
+    private Double kwh;
+
+    @OneToMany(mappedBy = "tarifId")
+    private List<Achat> achats;
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/model/Achat.java
+## File Content
+package com.AppSenelec.model;
+
+import com.AppSenelec.model.TransactionStatus;
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import java.time.LocalDateTime;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Achat extends BaseModel {
+    private String numero;
+    private Double amount;
+    private Double kwhPurchased;
+    private TransactionStatus transactionStatus;
+    private LocalDateTime date;
+    private String reference;
+    private String codeRecharge;
+    private boolean isUsed;
+    @ManyToOne
+    @JoinColumn(name = "compteur_id")
+    private Compteur compteur;
+    private Long tarifId;
+} 
+
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/helper/LogHelper.java
+## File Content
+package com.AppSenelec.helper;
+
+import com.AppSenelec.dto.CreateLogRequest;
+import com.AppSenelec.dto.CreateLogResponse;
+import com.AppSenelec.exception.NotFoundException;
+import com.AppSenelec.mapper.LogMapper;
+import com.AppSenelec.model.Log;
+import com.AppSenelec.response.ApiResponse;
+import com.AppSenelec.service.ILogService;
+import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+@Component
+public class LogHelper {
+    private final ILogService logService;
+
+    public LogHelper(ILogService logService) {
+        this.logService = logService;
+    }
+
+    public ApiResponse<CreateLogResponse> save(CreateLogRequest request) {
+        Log log = LogMapper.toEntity(request);
+        log = logService.save(log);
+        CreateLogResponse response = LogMapper.toResponse(log);
+        return ApiResponse.<CreateLogResponse>builder()
+                .message("Log créé avec succès")
+                .date(LocalDateTime.now())
+                .status(201)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<CreateLogResponse> findById(long id) {
+        Log log = logService.findById(id);
+        if (log == null) {
+            throw new NotFoundException("Log avec id " + id + " introuvable");
+        }
+        CreateLogResponse response = LogMapper.toResponse(log);
+        return ApiResponse.<CreateLogResponse>builder()
+                .message("Log trouvé")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<List<CreateLogResponse>> findAll(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? 
+            Sort.by(sortBy).descending() : 
+            Sort.by(sortBy).ascending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Log> logsPage = logService.findAllPaginated(pageable);
+        
+        List<CreateLogResponse> list = logsPage.getContent().stream()
+                .map(LogMapper::toResponse)
+                .collect(Collectors.toList());
+        
+        return ApiResponse.<List<CreateLogResponse>>builder()
+                .message("Liste des logs récupérée avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(list)
+                .totalElements(logsPage.getTotalElements())
+                .totalPages(logsPage.getTotalPages())
+                .currentPage(logsPage.getNumber())
+                .pageSize(logsPage.getSize())
+                .isFirst(logsPage.isFirst())
+                .isLast(logsPage.isLast())
+                .build();
+    }
+
+    public ApiResponse<CreateLogResponse> update(long id, CreateLogRequest request) {
+        Log existing = logService.findById(id);
+        if (existing == null) {
+            throw new NotFoundException("Log avec id " + id + " introuvable");
+        }
+        Log updated = LogMapper.toEntity(request);
+        updated.setId(id);
+        updated = logService.update(id, updated);
+        CreateLogResponse response = LogMapper.toResponse(updated);
+        return ApiResponse.<CreateLogResponse>builder()
+                .message("Log mis à jour avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<String> delete(long id) {
+        Log log = logService.findById(id);
+        if (log == null) {
+            throw new NotFoundException("Log avec id " + id + " introuvable");
+        }
+        logService.delete(log);
+        return ApiResponse.<String>builder()
+                .message("Log supprimé avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data("Log supprimé")
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/helper/TarifHelper.java
+## File Content
+package com.AppSenelec.helper;
+
+import com.AppSenelec.dto.CreateTarifRequest;
+import com.AppSenelec.dto.CreateTarifResponse;
+import com.AppSenelec.exception.NotFoundException;
+import com.AppSenelec.mapper.TarifMapper;
+import com.AppSenelec.model.Tarif;
+import com.AppSenelec.response.ApiResponse;
+import com.AppSenelec.service.ITarifService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+public class TarifHelper {
+    private final ITarifService tarifService;
+
+    public TarifHelper(ITarifService tarifService) {
+        this.tarifService = tarifService;
+    }
+
+    public ApiResponse<CreateTarifResponse> save(CreateTarifRequest request) {
+        Tarif tarif = TarifMapper.toEntity(request);
+        tarif = tarifService.save(tarif);
+        CreateTarifResponse response = TarifMapper.toResponse(tarif);
+        return ApiResponse.<CreateTarifResponse>builder()
+                .message("Tarif créé avec succès")
+                .date(LocalDateTime.now())
+                .status(201)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<CreateTarifResponse> findById(long id) {
+        Tarif tarif = tarifService.findById(id);
+        if (tarif == null) {
+            throw new NotFoundException("Tarif avec id " + id + " introuvable");
+        }
+        CreateTarifResponse response = TarifMapper.toResponse(tarif);
+        return ApiResponse.<CreateTarifResponse>builder()
+                .message("Tarif trouvé")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<List<CreateTarifResponse>> findAll(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? 
+            Sort.by(sortBy).descending() : 
+            Sort.by(sortBy).ascending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Tarif> tarifsPage = tarifService.findAllPaginated(pageable);
+        
+        List<CreateTarifResponse> list = tarifsPage.getContent().stream()
+                .map(TarifMapper::toResponse)
+                .collect(Collectors.toList());
+        
+        return ApiResponse.<List<CreateTarifResponse>>builder()
+                .message("Liste des tarifs récupérée avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(list)
+                .totalElements(tarifsPage.getTotalElements())
+                .totalPages(tarifsPage.getTotalPages())
+                .currentPage(tarifsPage.getNumber())
+                .pageSize(tarifsPage.getSize())
+                .isFirst(tarifsPage.isFirst())
+                .isLast(tarifsPage.isLast())
+                .build();
+    }
+
+    public ApiResponse<CreateTarifResponse> update(long id, CreateTarifRequest request) {
+        Tarif existing = tarifService.findById(id);
+        if (existing == null) {
+            throw new NotFoundException("Tarif avec id " + id + " introuvable");
+        }
+        Tarif updated = TarifMapper.toEntity(request);
+        updated.setId(id);
+        updated = tarifService.update(id, updated);
+        CreateTarifResponse response = TarifMapper.toResponse(updated);
+        return ApiResponse.<CreateTarifResponse>builder()
+                .message("Tarif mis à jour avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<String> delete(long id) {
+        Tarif tarif = tarifService.findById(id);
+        if (tarif == null) {
+            throw new NotFoundException("Tarif avec id " + id + " introuvable");
+        }
+        tarifService.delete(tarif);
+        return ApiResponse.<String>builder()
+                .message("Tarif supprimé avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data("Tarif supprimé")
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/helper/AchatHelper.java
+## File Content
+package com.AppSenelec.helper;
+
+import com.AppSenelec.dto.CreateAchatRequest;
+import com.AppSenelec.dto.CreateAchatResponse;
+import com.AppSenelec.exception.NotFoundException;
+import com.AppSenelec.mapper.AchatMapper;
+import com.AppSenelec.model.Achat;
+import com.AppSenelec.model.Tarif;
+import com.AppSenelec.model.TransactionStatus;
+import com.AppSenelec.response.ApiResponse;
+import com.AppSenelec.service.IAchatService;
+import com.AppSenelec.service.ITarifService;
+import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+@Component
+public class AchatHelper {
+    private final IAchatService achatService;
+    private final ITarifService tarifService;
+
+    public AchatHelper(IAchatService achatService, ITarifService tarifService) {
+        this.achatService = achatService;
+        this.tarifService = tarifService;
+    }
+
+    public ApiResponse<CreateAchatResponse> save(CreateAchatRequest request) {
+        // Récupérer le tarif sélectionné
+        Tarif tarif = tarifService.findById(request.getTarifId());
+        if (tarif == null) {
+            throw new IllegalArgumentException("Tarif avec id " + request.getTarifId() + " introuvable");
+        }
+        
+        // Vérifier que le montant est supérieur ou égal au montant du tarif
+        double montant = request.getAmount();
+        double montantTarif = tarif.getAmount();
+        
+        if (montant < montantTarif) {
+            throw new IllegalArgumentException("Le montant " + montant + " est inférieur au montant minimum requis " + montantTarif + " pour ce tarif");
+        }
+        
+        // Calculer les kWh avec la formule : (montant achat × kWh tarif) ÷ montant tarif
+        double kwh = (montant * tarif.getKwh()) / montantTarif;
+        BigDecimal bd = new BigDecimal(kwh).setScale(1, RoundingMode.UP);
+        double kwhArrondi = bd.doubleValue();
+        
+        // Générer un code de recharge unique de 20 chiffres
+        String codeRecharge = achatService.generateUniqueCodeRecharge();
+        
+        // Préparer l'achat
+        Achat achat = AchatMapper.toEntity(request);
+        achat.setKwhPurchased(kwhArrondi);
+        achat.setCodeRecharge(codeRecharge);
+        achat.setTransactionStatus(TransactionStatus.COMPLETED);
+        achat.setUsed(false);
+        achat = achatService.save(achat);
+        CreateAchatResponse response = AchatMapper.toResponse(achat);
+        return ApiResponse.<CreateAchatResponse>builder()
+                .message("Achat créé avec succès")
+                .date(LocalDateTime.now())
+                .status(201)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<CreateAchatResponse> findById(long id) {
+        Achat achat = achatService.findById(id);
+        if (achat == null) {
+            throw new NotFoundException("Achat avec id " + id + " introuvable");
+        }
+        CreateAchatResponse response = AchatMapper.toResponse(achat);
+        return ApiResponse.<CreateAchatResponse>builder()
+                .message("Achat trouvé")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<List<CreateAchatResponse>> findAll(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? 
+            Sort.by(sortBy).descending() : 
+            Sort.by(sortBy).ascending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Achat> achatsPage = achatService.findAllPaginated(pageable);
+        
+        List<CreateAchatResponse> list = achatsPage.getContent().stream()
+                .map(AchatMapper::toResponse)
+                .collect(Collectors.toList());
+        
+        return ApiResponse.<List<CreateAchatResponse>>builder()
+                .message("Liste des achats récupérée avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(list)
+                .totalElements(achatsPage.getTotalElements())
+                .totalPages(achatsPage.getTotalPages())
+                .currentPage(achatsPage.getNumber())
+                .pageSize(achatsPage.getSize())
+                .isFirst(achatsPage.isFirst())
+                .isLast(achatsPage.isLast())
+                .build();
+    }
+
+    public ApiResponse<CreateAchatResponse> update(long id, CreateAchatRequest request) {
+        Achat existing = achatService.findById(id);
+        if (existing == null) {
+            throw new NotFoundException("Achat avec id " + id + " introuvable");
+        }
+        Achat updated = AchatMapper.toEntity(request);
+        updated.setId(id);
+        updated = achatService.update(id, updated);
+        CreateAchatResponse response = AchatMapper.toResponse(updated);
+        return ApiResponse.<CreateAchatResponse>builder()
+                .message("Achat mis à jour avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data(response)
+                .build();
+    }
+
+    public ApiResponse<String> delete(long id) {
+        Achat achat = achatService.findById(id);
+        if (achat == null) {
+            throw new NotFoundException("Achat avec id " + id + " introuvable");
+        }
+        achatService.delete(achat);
+        return ApiResponse.<String>builder()
+                .message("Achat supprimé avec succès")
+                .date(LocalDateTime.now())
+                .status(200)
+                .data("Achat supprimé")
+                .build();
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/config/WebConfig.java
+## File Content
+package com.AppSenelec.config;
+
+import com.AppSenelec.util.RequestInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    
+    @Autowired
+    private RequestInterceptor requestInterceptor;
+    
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(requestInterceptor)
+                .addPathPatterns("/api/**") // Appliquer à tous les endpoints /api/
+                .excludePathPatterns("/api/logs/**"); // Exclure les logs pour éviter les boucles infinies
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/config/SwaggerConfig.java
+## File Content
+package com.AppSenelec.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Senelec API Documentation")
+                        .version("1.0")
+                        .description("Documentation interactive des endpoints de l'API Senelec"));
+    }
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/repository/AchatRepository.java
+## File Content
+package com.AppSenelec.repository;
+
+import com.AppSenelec.model.Achat;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface AchatRepository extends JpaRepository<Achat, Long> {
+    @Query("SELECT a FROM Achat a WHERE a.isDeleted = false")
+    List<Achat> findAllNotDeleted();
+    boolean existsByCodeRecharge(String codeRecharge);
+    Achat findByCodeRecharge(String codeRecharge);
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/repository/CompteurRepository.java
+## File Content
+package com.AppSenelec.repository;
+
+import com.AppSenelec.model.Compteur;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface CompteurRepository extends JpaRepository<Compteur, Long> {
+    @Query("SELECT c FROM Compteur c WHERE c.isDeleted = false")
+    List<Compteur> findAllNotDeleted();
+    Compteur findByReferenceNumber(String referenceNumber);
+    boolean existsByReferenceNumber(String referenceNumber);
+} 
+# Opened Files
+## File Name
+src/main/java/com/AppSenelec/model/Compteur.java
+## File Content
+package com.AppSenelec.model;
+
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import java.time.LocalDateTime;
+import java.util.List;
+import jakarta.persistence.OneToMany;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Compteur extends BaseModel {
+    private String referenceNumber;
+    private Double kwhConsumption;
+    private Long userId;
+    private String status;
+    private LocalDateTime creationDate;
+
+    @OneToMany(mappedBy = "compteur")
+    private List<Achat> achats;
+} 
