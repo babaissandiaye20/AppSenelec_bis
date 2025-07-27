@@ -35,30 +35,65 @@ AppSenelec est une API REST développée avec Spring Boot pour la gestion d'un s
 - **Documentation API**: Swagger/OpenAPI
 - **Validation**: Bean Validation
 - **Build Tool**: Maven
+- **Containerisation**: Docker & Docker Compose
 
 ## 📦 Prérequis
 
+### **Pour l'installation locale :**
 - Java 17 ou supérieur
 - Maven 3.6+
 - PostgreSQL
 - Variables d'environnement configurées
 
+### **Pour l'installation Docker :**
+- Docker 20.10+
+- Docker Compose 2.0+
+- Compte Docker Hub (pour le push)
+
 ## ⚙️ Installation et Configuration
 
-### 1. **Cloner le projet**
+### **Option 1 : Installation avec Docker (Recommandé)**
+
+#### 1. **Cloner le projet**
 ```bash
 git clone <url-du-repo>
 cd AppSenelec
 ```
 
-### 2. **Configurer la base de données**
+#### 2. **Lancer avec Docker Compose (Développement)**
+```bash
+# Lancer l'application avec PostgreSQL locale
+docker-compose up -d
+
+# Ou lancer en mode production avec base de données Neon
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+#### 3. **Build et Push vers Docker Hub**
+```bash
+# Modifier le script avec votre nom d'utilisateur Docker Hub
+nano build-and-push.sh
+
+# Exécuter le script
+./build-and-push.sh
+```
+
+### **Option 2 : Installation locale**
+
+#### 1. **Cloner le projet**
+```bash
+git clone <url-du-repo>
+cd AppSenelec
+```
+
+#### 2. **Configurer la base de données**
 - Créer une base de données PostgreSQL
 - Configurer les variables d'environnement :
   ```bash
   export DB_PASSWORD=votre_mot_de_passe
   ```
 
-### 3. **Configuration de la base de données**
+#### 3. **Configuration de la base de données**
 Le fichier `application.yml` contient la configuration :
 ```yaml
 spring:
@@ -68,7 +103,7 @@ spring:
     password: ${DB_PASSWORD}
 ```
 
-### 4. **Lancer l'application**
+#### 4. **Lancer l'application**
 ```bash
 mvn spring-boot:run
 ```
@@ -80,6 +115,12 @@ L'application sera accessible sur : `http://localhost:8080`
 ### Accès à la documentation Swagger
 - **URL**: `http://localhost:8080/swagger-ui.html`
 - **API Docs**: `http://localhost:8080/api-docs`
+
+### **Services Docker disponibles :**
+- **Application**: `http://localhost:8080`
+- **pgAdmin** (gestion BDD): `http://localhost:5050`
+  - Email: `admin@senelec.com`
+  - Mot de passe: `admin123`
 
 ## 🔌 Endpoints Principaux
 
@@ -183,6 +224,13 @@ src/main/java/com/AppSenelec/
 ├── exception/         # Gestion d'erreurs
 ├── config/            # Configuration
 └── util/              # Utilitaires
+
+# Fichiers Docker
+├── Dockerfile                    # Configuration Docker
+├── docker-compose.yml            # Compose pour développement
+├── docker-compose.prod.yml       # Compose pour production
+├── .dockerignore                 # Fichiers exclus du build
+└── build-and-push.sh            # Script de build et push
 ```
 
 ## 🔒 Sécurité et Validation
@@ -228,3 +276,4 @@ Pour toute question ou problème :
 ---
 
 **AppSenelec** - Simplifiez la gestion électrique ! ⚡ # Senelec-clone-facture
+# AppSenelec
