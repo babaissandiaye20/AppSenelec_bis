@@ -1,0 +1,48 @@
+# Fichiers de développement
+.git
+.gitignore
+README.md
+*.md
+.env
+.env.*
+
+# Fichiers Maven
+target/
+!target/*.jar
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Fichiers IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.settings/
+.project
+.classpath
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Fichiers de test
+src/test/
+
+# Documentation
+docs/
+*.pdf
+
+# Scripts de déploiement
+deploy/
+scripts/ 

@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Application AppSenelec pour la production
+  app-senelec:
+    image: zigfreak/appsenelec:latest
+    container_name: app-senelec-prod
+    ports:
+      - "8080:8080"
+    environment:
+      # Configuration de la base de données Neon (production)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ep-dawn-flower-a4jfwa7h-pooler.us-east-1.aws.neon.tech/senelec?sslmode=require&channel_binding=require
+      - SPRING_DATASOURCE_USERNAME=Freak_owner
+      - SPRING_DATASOURCE_PASSWORD=npg_HtBmg2zSwf9k
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      
+      # Configuration JPA
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=false
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      
+      # Configuration de l'application
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+      
+      # Configuration Swagger
+      - SPRINGDOC_API_DOCS_PATH=/api-docs
+      
+      # Configuration Java optimisée pour la production
+      - JAVA_OPTS=-Xmx1g -Xms512m -XX:+UseG1GC -XX:+UseContainerSupport
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api-docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25' 

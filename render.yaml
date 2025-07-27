@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: appsenelec-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: java -jar app.jar
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://ep-dawn-flower-a4jfwa7h-pooler.us-east-1.aws.neon.tech/senelec?sslmode=require&channel_binding=require
+      - key: SPRING_DATASOURCE_USERNAME
+        value: Freak_owner
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: npg_HtBmg2zSwf9k
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SERVER_PORT
+        value: 8080
+      - key: JAVA_OPTS
+        value: -Xmx1g -Xms512m -XX:+UseG1GC
+    healthCheckPath: /api-docs
+    autoDeploy: true
+    buildCommand: docker build -t appsenelec .
+    startCommand: docker run -p 8080:8080 appsenelec 

@@ -5,7 +5,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://ep-dawn-flower-a4jfwa7h-pooler.us-east-1.aws.neon.tech/senelec?sslmode=require&channel_binding=require
     username: Freak_owner
-    password: ${DB_PASSWORD}
+    password: npg_HtBmg2zSwf9k
   jpa:
     hibernate:
       ddl-auto: update
