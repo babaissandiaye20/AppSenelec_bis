@@ -2,7 +2,7 @@
 
 ## 📋 Description
 
-AppSenelec si est une API REST développée avec Spring Boot pour la gestion d'un système de recharge électrique. Cette application permet de gérer les compteurs électriques, les achats de crédit électrique, les tarifs et les logs d'activité.
+AppSenelec si  ed est une API REST développée avec Spring Boot pour la gestion d'un système de recharge électrique. Cette application permet de gérer les compteurs électriques, les achats de crédit électrique, les tarifs et les logs d'activité.
 
 ## 🚀 Fonctionnalités Principales
 
