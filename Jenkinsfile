@@ -20,7 +20,7 @@ pipeline {
 
         stage('Build & Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIALS', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_Java', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
                         def appName = 'appsenelec' // Nom de l'application
                         def branchName = env.BRANCH_NAME ?: env.GIT_BRANCH ?: 'latest'
@@ -45,7 +45,7 @@ pipeline {
 
         stage('Deploy to Render') {
             steps {
-                withCredentials([string(credentialsId: 'RENDER_DEPLOY_HOOK', variable: 'RENDER_HOOK_URL')]) {
+                withCredentials([string(credentialsId: 'RENDER_HOOK', variable: 'RENDER_HOOK_URL')]) {
                     sh 'curl -X POST "$RENDER_HOOK_URL"'
                 }
             }
