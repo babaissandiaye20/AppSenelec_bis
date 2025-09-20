@@ -16,25 +16,7 @@ pipeline {
             steps {
                 sh './mvnw clean package'
             }
-        }babaissandiaye@babaissandiaye-HP-ProBook-440-14-inch-G10-Notebook-PC:~$ mvn --version
-Apache Maven 3.8.7
-Maven home: /usr/share/maven
-Java version: 17.0.16, vendor: Ubuntu, runtime: /usr/lib/jvm/java-17-openjdk-amd64
-Default locale: fr_FR, platform encoding: UTF-8
-OS name: "linux", version: "6.14.0-29-generic", arch: "amd64", family: "unix"
-babaissandiaye@babaissandiaye-HP-ProBook-440-14-inch-G10-Notebook-PC:~$
-
-
-
-
-
-
-
-
-
-
-
-
+        }
 
         stage('Build & Push Docker Image') {
             steps {
