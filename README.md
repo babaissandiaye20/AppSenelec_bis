@@ -11,7 +11,7 @@ AppSenelec si  ed est une API REST développée avec Spring Boot pour la gestion
 - Suivi de la consommation en kWh
 - Recharge de compteurs via codes de recharge
 - Statut des compteurs (ACTIVE, INACTIVE)
-
+aaa
 ### 2. **Système d'Achat de Crédit**
 - Achat de crédit électrique avec différents tarifs
 - Génération automatique de codes de recharge uniques (20 chiffres)
