@@ -8,7 +8,7 @@
 3. Dans le menu de gauche, cliquez sur **Secrets and variables** → **Actions**
 
 ### **2. Ajouter les Secrets requis :**
-
+azeii
 #### **DOCKER_USERNAME**
 - **Valeur** : `zigfreak`
 - **Description** : Nom d'utilisateur Docker Hub
@@ -99,4 +99,4 @@ git push origin main
 
 ---
 
-**🎉 Une fois configuré, chaque push sur `main` déclenchera automatiquement un déploiement !** 
+**🎉 Une fois configuré, chaque push sur `main` déclenchera automatiquement un déploiement !**
