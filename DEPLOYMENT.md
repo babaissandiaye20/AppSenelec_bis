@@ -54,6 +54,7 @@ docker-compose -f docker-compose.prod.yml up -d
 
 ### **Application :**
 - **URL**: `http://localhost:8080`
+- az
 - **Swagger UI**: `http://localhost:8080/swagger-ui.html`
 - **API Docs**: `http://localhost:8080/api-docs`
 
@@ -176,4 +177,4 @@ docker exec app-senelec top
 
 ---
 
-**🎉 Votre application AppSenelec est maintenant prête pour la production !** 
+**🎉 Votre application AppSenelec est maintenant prête pour la production !**
