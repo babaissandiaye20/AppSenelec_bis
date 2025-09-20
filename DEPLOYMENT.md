@@ -49,7 +49,7 @@ docker-compose -f docker-compose.prod.yml up -d
 - **8080** : Application AppSenelec
 - **5432** : PostgreSQL (développement)
 - **5050** : pgAdmin (développement)
-
+aaz
 ## 🌐 Accès aux services
 
 ### **Application :**
